@@ -1,6 +1,10 @@
 ---
 import Card from "./Card.astro";
 
+interface Day {
+  date: Date;
+  thisMonth: boolean;
+}
 
 const daysInMonth = () => {
   const fechaActual = new Date();
@@ -17,28 +21,64 @@ const daysInMonth = () => {
   return diasEnMes;
 }
 
-const days = daysInMonth();
-
-console.log(days);
-
-const getDateFromDay = (day:number) => {
+const getDateFromDay = (dayNumber:number) => {
     const date = new Date();
     const month = date.getMonth();
     const year = date.getFullYear();
-    return new Date(year, month, day);
+    return new Date(year, month, dayNumber);
 }
+
+const nDays = daysInMonth();
+let lDays: Day[] = [];
+
+const createListOfDays = () => {
+    const nDays = daysInMonth();
+
+  // Obtener el primer día del mes
+  const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const firstDayWeekday = firstDayOfMonth.getDay();
+
+  // Calcular cuántos días retroceder
+  const daysToSubtract = firstDayWeekday > 0 ? firstDayWeekday : 7;
+
+  // Crear las fechas de los días faltantes y agregarlos al arreglo
+  for (let i = daysToSubtract - 1; i >= 1; i--) {
+    const date = new Date(firstDayOfMonth);
+    date.setDate(date.getDate() - i);
+    lDays.push({ date, thisMonth: false });
+  }
+
+  // Crear las fechas del resto de los días del mes
+  Array.from({ length: nDays }, (_, i) => (
+    lDays.push({date:getDateFromDay(i + 1), thisMonth: true})
+  ));
+
+  // Ordenar el arreglo de fechas si es necesario
+  lDays.sort((a, b) => a.date.getTime() - b.date.getTime());
+}
+
+createListOfDays()
 
 ---
 
 <section>
-    {Array.from({ length: days }, (_, i) => (
-        <Card date={getDateFromDay(i + 1)} />
+    {lDays.map((item: Day) => (
+        <Card date={item.date} thisMonth={item.thisMonth}/>
     ))}
 </section>
 
 <style>
     section {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        grid-template-columns: repeat(7, 1fr);
         gap: 1rem;
+        padding: 3rem 5rem;
+
+        @media (max-width: 768px) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 480px) {
+            grid-template-columns: repeat(1, 1fr);
+        }
     }
