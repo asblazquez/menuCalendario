@@ -1,0 +1,33 @@
+---
+interface Props {
+    date: Date;
+}
+
+const { date } = Astro.props;
+var days = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+
+console.log(date)
+
+---
+
+<article class="card">
+    <header>
+        <h2>{days[date.getDay()]}</h2>
+        <time>{date.getDay()}</time>
+    </header>
+    <p>
+        hola
+    </p>
+    <footer>
+        <a href="#">Read more</a>
+    </footer>
+</article>
+
+<style>
+    .card{
+        background-color: white;
+        aspect-ratio: 1 / 1;
+        max-width: 10rem;
+        border-radius: 10px;
+    }
+</style>

@@ -1,0 +1,44 @@
+---
+import Card from "./Card.astro";
+
+
+const daysInMonth = () => {
+  const fechaActual = new Date();
+  
+  const año = fechaActual.getFullYear();
+  const mes = fechaActual.getMonth();
+
+  const primerDiaSiguienteMes = new Date(año, mes + 1, 1);
+
+  primerDiaSiguienteMes.setDate(primerDiaSiguienteMes.getDate() - 1);
+
+  const diasEnMes = primerDiaSiguienteMes.getDate();
+
+  return diasEnMes;
+}
+
+const days = daysInMonth();
+
+console.log(days);
+
+const getDateFromDay = (day:number) => {
+    const date = new Date();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    return new Date(year, month, day);
+}
+
+---
+
+<section>
+    {Array.from({ length: days }, (_, i) => (
+        <Card date={getDateFromDay(i + 1)} />
+    ))}
+</section>
+
+<style>
+    section {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        gap: 1rem;
+    }
