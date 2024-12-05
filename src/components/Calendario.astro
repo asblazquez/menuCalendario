@@ -6,13 +6,13 @@ interface Day {
   thisMonth: boolean;
 }
 
-const daysInMonth = () => {
-  const fechaActual = new Date();
-  
-  const año = fechaActual.getFullYear();
-  const mes = fechaActual.getMonth();
+const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];   
+let currentMonth:number = new Date().getMonth();
+let currentYear:number = new Date().getFullYear();
 
-  const primerDiaSiguienteMes = new Date(año, mes + 1, 1);
+const daysInMonth = (month:number, year:number) => {
+
+  const primerDiaSiguienteMes = new Date(year, month + 1, 1);
 
   primerDiaSiguienteMes.setDate(primerDiaSiguienteMes.getDate() - 1);
 
@@ -28,11 +28,11 @@ const getDateFromDay = (dayNumber:number) => {
     return new Date(year, month, dayNumber);
 }
 
-const nDays = daysInMonth();
+const nDays = daysInMonth(currentMonth, currentYear);
 let lDays: Day[] = [];
 
 const createListOfDays = () => {
-    const nDays = daysInMonth();
+    const nDays = daysInMonth(currentMonth, currentYear);
 
   // Obtener el primer día del mes
   const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -57,17 +57,43 @@ const createListOfDays = () => {
   lDays.sort((a, b) => a.date.getTime() - b.date.getTime());
 }
 
+const nextMonth = () => {
+    console.log('next month');
+    currentMonth = currentMonth + 1;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear = currentYear + 1;
+    }
+    createListOfDays();
+}
+
 createListOfDays()
 
 ---
-
+<div>
+    <h1>{months[currentMonth]}</h1>
+    <button type="button" id="next">siguente</button>
 <section>
     {lDays.map((item: Day) => (
         <Card date={item.date} thisMonth={item.thisMonth}/>
     ))}
 </section>
+</div>
+
+<script is:inline>
+    function handleClick () {
+      console.log("¡botón pulsado!");
+    }
+    document.getElementById("next").addEventListener("click", handleClick);
+  </script>
 
 <style>
+    h1 {
+        text-align: center;
+        margin-top: 2rem;
+        color: white;
+    }
+
     section {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
